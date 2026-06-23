@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
@@ -88,7 +89,7 @@ public final class DefaultResourcePackStorage {
 				continue;
 			}
 
-			try (PackResources pack = profile.open()) {
+			try (Stream<PackResources> packs = profile.open(); PackResources pack = packs.findFirst().orElseThrow()) {
 				if (pack instanceof ModNioPackResources builtinPack && builtinPack.getActivationType().isEnabledByDefault()) {
 					if (trackedPacks.add(builtinPack.packId())) {
 						resourcePacks.add(profile.getId());

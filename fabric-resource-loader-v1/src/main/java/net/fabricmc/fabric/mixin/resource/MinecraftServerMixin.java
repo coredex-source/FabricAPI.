@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.resource;
 import java.net.Proxy;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.mojang.datafixers.DataFixer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -79,7 +80,7 @@ public class MinecraftServerMixin implements DataResourceStore, FabricOriginalKn
 		Pack profile = resourcePackManager.getPack(profileId);
 
 		if (profile.getPackSource() instanceof BuiltinModPackSource) {
-			try (PackResources pack = profile.open()) {
+			try (Stream<PackResources> packs = profile.open(); PackResources pack = packs.findFirst().orElseThrow()) {
 				// Prevents automatic load for built-in data packs provided by mods.
 				return pack instanceof ModNioPackResources modPack && !modPack.getActivationType().isEnabledByDefault();
 			}

@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -249,7 +250,7 @@ public final class ModPackResourcesUtil {
 				continue;
 			}
 
-			try (PackResources pack = profile.open()) {
+			try (Stream<PackResources> packs = profile.open(); PackResources pack = packs.findFirst().orElseThrow()) {
 				if (pack instanceof ModNioPackResources nioPack && nioPack.getActivationType().isEnabledByDefault()) {
 					enabled.add(profile.getId());
 				} else {
